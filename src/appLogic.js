@@ -33,19 +33,19 @@ const appLogic = (() => {
         workProject.addTodo(new Todo('Team meeting','Must be on time!!!', new Date(2025, 6, 10), 'medium' , ['report'], false));
 
         const personalProject = new Project('Personal');
-    personalProject.addTodo(new Todo('Grocery shopping', 'Milk, eggs, chicken, fruits.', new Date(2025, 4, 20), 'low', ['home', 'shopping'], false));
-    personalProject.addTodo(new Todo('Book doctor appointment', 'Annual check-up.', new Date(2025, 5, 10), 'high', ['health'], false));
+        personalProject.addTodo(new Todo('Grocery shopping', 'Milk, eggs, chicken, fruits.', new Date(2025, 4, 20), 'low', ['home', 'shopping'], false));
+        personalProject.addTodo(new Todo('Book doctor appointment', 'Annual check-up.', new Date(2025, 5, 10), 'high', ['health'], false));
 
-    const learningProject = new Project('Learning');
-    learningProject.addTodo(new Todo('Webpack Deep Dive', 'Understand loaders and plugins.', new Date(2025, 4, 30), 'medium', ['dev'], true));
-    learningProject.addTodo(new Todo('Read "The Pragmatic Programmer"', 'Chapter 3-5', '', 'low', ['reading', 'dev'], false));
+        const learningProject = new Project('Learning');
+        learningProject.addTodo(new Todo('Webpack Deep Dive', 'Understand loaders and plugins.', new Date(2025, 4, 30), 'medium', ['dev'], true));
+        learningProject.addTodo(new Todo('Read "The Pragmatic Programmer"', 'Chapter 3-5', '', 'low', ['reading', 'dev'], false));
 
-    projects = [workProject, personalProject, learningProject];
-    currentProject = workProject;
-    saveProjects();
+        projects = [workProject, personalProject, learningProject];
+        currentProject = workProject;
+        saveProjects();
     }
 
-    function loadProject() {
+    function loadProjects() {
         const loadedData = storage.loadData();
         if(loadedData && loadedData.length > 0) {
             projects = rehydrateProjects(loadedData);
@@ -168,6 +168,19 @@ const appLogic = (() => {
             }
             return null;
         }
+
+        function toggleTodoComplete(projectId, todoId) {
+            const project = getProjectById(projectId);
+            if(project) {
+                const todo = project.getTodoById(todoId);
+                if(todo) {
+                    todo.toggleComplete();
+                    saveProjects();
+                    return todo;
+                }
+            }
+            return null;
+        }
         
         function getAllTodosAcrossProjects() {
             return projects.reduce(
@@ -208,12 +221,82 @@ const appLogic = (() => {
             return Array.from(allTags).sort();
         }
 
+        function filterTodosByTagAcrossProjects(tag) {
+            const allTodos = getAllTodosAcrossProjects();
+            const trimmedTag = tag.trim().toLowerCase();
+            if(!trimmedTag) return allTodos;
+            return allTodos.filter((todo) =>
+                todo.tags.some((t) => t.toLowerCase() === trimmedTag),
+            );
+        }
+
         function filterTodosByPriorityAcrossProjects(priorityLevel) {
             const allTodos = getAllTodosAcrossProjects();
             return allTodos.filter((todo) => todo.priority === priorityLevel);
         }
 
         const priorityOrder = { 'high': 1, 'medium': 2, 'low': 3 }; 
+
+        function sortTodos(todos, sortField, sortDirection = 'asc') {
+            const sorted = [...todos];
+
+            sorted.sort((a, b) => {
+                let valA, valB;
+
+                switch(sortField) {
+                    case 'title':
+                        valA = a.title.toLowerCase();
+                        valB = b.titie.toLowerCase();
+                        break;
+                    case 'dueDate':
+                        // If due date is NULL, sort them to the end
+                        if(a.dueDate === null && b.dueDate === null) return 0;
+                        if(a.dueDate === null) return 1; //a comes after b
+                        if(b.dueDate === null) return -1; // a comes before b
+                        valA = a.dueDate;
+                        valB = b.dueDate;
+                        break;
+                    case 'priority':
+                        valA = priorityOrder[a.priority];
+                        valB = priorityOrder[b.priority];
+                        break;
+                    default:
+                        return 0; // no sorting for unknown fields
+                }
+
+                let comparison = 0;
+                if (valA > valB) {
+                    comparison = 1;
+                } else if (valA < valB) {
+                    comparison = -1;
+                }
+                return sortDirection === 'desc' ? comparison * -1 : comparison;
+            });
+            return sorted;
+        }
+
+        loadProjects();
+
+        return {
+            addProject,
+            updateProject,
+            removeProject,
+            getProjectById,
+            getAllProjects,
+            setCurrentProject,
+            getCurrentProject,
+            addTodoToProject,
+            removeTodoFromProject,
+            updateTodoInProject,
+            toggleTodoComplete,
+            getAllTodosAcrossProjects,
+            getAllTodosWithProjectInfo,
+            searchTodosInList,
+            getAllTagsAcrossProjects,
+            filterTodosByTagAcrossProjects,
+            filterTodosByPriorityAcrossProjects,
+            sortTodos,
+          };
     }
 
 });
