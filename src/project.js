@@ -33,7 +33,7 @@ class Project {
         return this.todos.filter((todo) => todo.priority === priorityLevel);
     }
 
-    getTodoByCompletio(completionStatus) {
+    getTodoByCompletion(completionStatus) {
         return this.todos.filter((todo) => todo.completed === completionStatus);
     }
 
