@@ -152,7 +152,74 @@ const domController = (() => {
             dueDateSpan.classList.add('todo-due-date');
             dueDateSpan.textContent = `Due: ${formatDateForDisplay(todo.dueDate)}`;
 
-            
+            todoInfoDiv.appendChild(checkbox);
+            todoInfoDiv.appendChild(titleSpan);
+            todoInfoDiv.appendChild(dueDateSpan);
+
+            // Project name that is displayed in global search result
+            if (isGlobalSearch && todo.project.name) {
+                const projectLabelSpan = document.createElement('span');
+                projectLabelSpan.classList.add('todo-project-label');
+                projectLabelSpan.textContent = `(Project: ${todo.projectName})`;
+                todoInfoDiv.appendChild(projectLabelSpan);
+            }
+
+            // Tags display
+            if (todos.tags && todos.tags.length > 0) {
+                const tagsDiv = document.createElement('div');
+                tagsDiv.classList.add('todos-tags-display');
+                todos.tags.forEach((tag) => {
+                    const tagSpan = document.createElement('span');
+                    tagSpan.classList.add('tag-label');
+                    tagSpan.textContent = tag;
+                    tagsDiv.appendChild(tagSpan);
+                });
+                todoInfoDiv.appendChild(tagsDiv);
+            }
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.classList.add('todo-actions');
+
+            const expandBtn = document.createElement('button');
+            expandBtn.classList.add('expand-todo-btn');
+            expandBtn.innerHTML = '&#43'; // Plus sign
+            expandBtn.title = 'Show details';
+            expandBtn.dataset.todoId = todo.id;
+            actionsDiv.appendChild(expandBtn);
+
+            const editBtn = document.createElement('button');
+            editBtn.classList.add('edit-todo-btn');
+            editBtn.textContent = 'Edit';
+            editBtn.dataset.todoId = todo.id;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('delete-todo-btn');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.dataset.todoId = todo.id;
+
+            actionsDiv.appendChild(editBtn);
+            actionsDiv.appendChild(deleteBtn);
+
+            todoPreviewContent.appendChild(todoInfoDiv);
+            todoPreviewContent.appendChild(actionsDiv);
+            li.appendChild(todoPreviewContent);
+
+            const fullDetailsDiv = document.createElement('div');
+            fullDetailsDiv.classList.add('todo-full-details', 'hidden');
+
+            const descriptionP = document.createElement('p');
+            descriptionP.innerHTML = 'Description: ';
+            const descriptionText = document.createTextNode(todo.description || 'No description');
+            descriptionP.appendChild(descriptionText);
+
+            const priorityP = document.createElement('p');
+            const priorityText = todo.priority.charAt(0).topUpperCase() + todo.priority.slice(1);
+            priorityP.innerHTML = `Priority: <span class="priority-text-${todo.priority}">${priorityText}</span>`;
+
+            fullDetailsDiv.appendChild(descriptionP);
+            fullDetailsDiv.appendChild(priorityP);
+            li.appendChild(fullDetailsDiv);
+            todosListUL.append(li);
         });
     }
 });

@@ -9,7 +9,7 @@ const appLogic = (() => {
     let currentProject = null;
 
     function rehydrateProjects(plainProjects) {
-        return plainProjects.map((plainProjects) => {
+        return plainProjects.map((plainProject) => {
             const project = new Project(plainProjects.name);
             project.id = plainProject.id;
             project.todos  =plainProjects.todos.map((plainTodo) => {
