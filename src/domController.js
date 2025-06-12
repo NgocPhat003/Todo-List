@@ -222,4 +222,201 @@ const domController = (() => {
             todosListUL.append(li);
         });
     }
-});
+
+    // Modal handling
+    function openProjectModal(projectToEdit = null) {
+        clearFormErrors(projectForm);
+        projectForm.reset();
+        projectIdInput.value = ''; // Clear hidden ID field
+        saveProjectBtn.textContent = 'Save';
+
+        if(projectToEdit) {
+            projectIdInput.value = projectToEdit.id;
+            projectNameInput.value = projectToEdit.name;
+        }
+        projectModal.style.display = 'block';
+        projectNameInput.focus();
+    }
+
+    function closeProjectModal() {
+        projectModal.style.display = 'none';
+    }
+
+    function openTodoModal(todoToEdit = null, currentProjectId) {
+        clearFormErrors(todoForm);
+        todoForm.reset();
+        todoIdInput.value = ''; // Clear hidde ID field
+
+        if (todoToEdit) {
+            todoIdInput.value = todoToEdit.id;
+            todoTitleInput.value = todoToEdit.title;
+            todoDescriptionInput.value = todoToEdit.description;
+            todoDueDateInput.value = (todoToEdit.dueDate && isValidDate(todoToEdit.dueDate))
+                ? format(todoToEdit.dueDate, 'yyyy-MM-dd') // Format date obj for input
+                : ''; // Empty string for null or ivalid date
+            todoPriorityInput.value = todoToEdit.priority;
+            todoTagsInput.value = todoToEdit.tags ? todoToEdit.getTagsString() : '';
+        }
+        todoForm.dataset.currentProjectId = currentProjectId;
+        todoModal.style.display = 'block';
+        todoTitleInput.focus();
+    }
+
+    function closeTodoModal() {
+        todoModal.style.display = 'none';
+    }
+
+    // Getting form data
+    function getProjectFormData() {
+        clearFormErros(projectForm);
+        let isValid = true;
+        const name = projectNameInput.value.trim();
+        const id = projectIdInput.value;
+
+        if (projectNameInput.validity.valueMissing) {
+            showFieldError(projectNameInput, 'Project name is required');
+            isValid = false;
+        }
+        return isValid ? {id, name} : null;
+    }
+
+    function getTodoFormData() {
+        clearFormErrors(todoForm);
+        let isValid = true;
+        const title = todoTitleInput.value.trim();
+        const description = todoDescriptionInput.value.trim();
+        const dueDate = todoDueDateInput.value;
+        const priority = todoPriorityInput.value;
+        const tagString  = todoTagsInput.value.trim(); // Comma-separated string
+        const id = todoIdInput.value;
+        const currentProjectId = todoForm.dataset.currentProjectId;
+    
+
+        if (todoTitleInput.validity.valueMissing) {
+        showFieldError(todoTitleInput, 'Task name is required!');
+        isValid = false;
+    }
+
+        return isValid 
+        ? {
+            id,
+            title,
+            description,
+            dueDate,
+            priority,
+            tagString,
+            currentProjectId
+        }
+        : null;
+    }
+
+    // Form validation
+    function clearFormErrors(formElement) {
+        formElement.querySelectorAll('.form-input, .form-select').forEach(input => {
+            input.setCustomValidity('');
+        });
+        formElement.querySelectorAll('.error-message').forEach(span => {
+            span.textContent = '';
+        });
+    }
+
+    function showFieldError(inputElement, message) {
+        const helpSpan = inputElement.parentElement.querySelector('.help-message');
+        const errorSpan = inputElement.parentElement.querySelector('.error-message');
+
+        inputElement.setCustomValidity(message);
+        errorSpan.textContent = message;
+        if(helpSpan) {
+            helpSpan.remove();
+        }
+    }
+
+    function showNotification(mesage, type = 'info') { // Types include: info, success, error, warning
+        const notification = document.createElement('div');
+        notification.classList.add('notification', type);
+        notification.textContent   = message;
+
+        notificationArea.appendChild(notification);
+
+        // Remove notification from DOM after animation is complete
+        notification.addEventListener('animationend', (e) => {
+            if (e.animationName = 'fadeOutNotification') {
+                notification.remove();
+            }
+        });
+    }
+
+    function renderTagCloud(tags, activeTags) {
+        if (!tagFilterArea) return;
+        clearElement(tagFilterArea);
+
+        if (tags && tags.length > 0) {
+            tags.forEach( tag => {
+                const tagElement = document.createElement('span');
+                tagElement.classList.add('tag-filter-item');
+                tagElement.textContent = tag;
+                tagElement.dataset.tag = tag;
+                if(tag === activeTags) {
+                    tagElement.classList.add('active');
+                }
+                tagFilterArea.appendChild(tagElement);
+            });
+        } else {
+            const noTagMsg = document.createElement('span');
+            noTagMsg.textContent = 'No tags available for filtering.';
+            noTagMsg.style.fontSize = '0.9 em';
+            noTagMsg.style.color = '#666';
+            tagFilterArea.appendChild(noTagMsg);
+        }
+
+        if (tagFilterClearBtn) {
+            tagFilterClearBtn.style.display = activeTags ? 'inline' : 'none';
+        }
+        if ( tagFilterClearBtn && !tagFilterArea.contains(tagFilterClearBtn) && tags.length > 0) {
+            tagFilterArea.appendChild(tagFilterClearBtn);
+        }
+    }
+
+    // Initial state
+    function initializeUI() {
+        updateProjectTitle('Loding projects...');
+        clearElement(todosListUL);
+        const li = document.createElement('li');
+        li.textContent = 'Select or add a project to see your tasks.'
+        todosListUL.appendChild(li);
+        addTodoBtn.style.display = 'none';
+    }
+
+
+    return {
+        renderProjects,
+        renderTodos,
+        updateProjectTitle,
+        openProjectModal,
+        closeProjectModal,
+        openTodoModal,
+        closeTodoModal,
+        getProjectFormData,
+        getTodoFormData,
+        clearElement,
+        showNotification,
+        renderTagCloud,
+        initializeUI,
+        elements: {
+            projectModal,
+            todoModal,
+            projectsListUL,
+            todosListUL,
+            addProjectBtn,
+            addTodoBtn,
+            projectForm,
+            todoForm,
+            closeProjectModalBtn,
+            closeTodoModalBtn,
+            tagFilterClearBtn,
+        },
+    };
+
+ });
+
+ export default domController;
