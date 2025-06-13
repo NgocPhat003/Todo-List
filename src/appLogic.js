@@ -130,9 +130,9 @@ const appLogic = (() => {
         const project = getProjectById(projectId);
         if(project) {
             const { title, description, dueDate, priority, tagsString} = todoDetails;
-            const newTodo = newTodo(title, description, dueDate, priority);
+            const newTodo = new Todo(title, description, dueDate, priority);
             if (tagsString) {
-                newTodo.setTagFromString((tagsString));
+                newTodo.setTagsFromString(tagsString);
             }
             project.addTodo(newTodo);
             saveProjects();
@@ -211,7 +211,7 @@ const appLogic = (() => {
             }
             const lowerSearchTerm = searchTerm.toLowerCase();
             return todos.filter(todo =>
-                todo.tilte.toLowerCase().includes(lowerSearchTerm) ||
+                todo.title.toLowerCase().includes(lowerSearchTerm) ||
                 todo.description.toLowerCase().includes(lowerSearchTerm)
                 );
         }

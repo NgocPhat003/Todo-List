@@ -157,7 +157,7 @@ const domController = (() => {
             todoInfoDiv.appendChild(dueDateSpan);
 
             // Project name that is displayed in global search result
-            if (isGlobalSearch && todo.project.name) {
+            if (isGlobalSearch && todo.projectName) {
                 const projectLabelSpan = document.createElement('span');
                 projectLabelSpan.classList.add('todo-project-label');
                 projectLabelSpan.textContent = `(Project: ${todo.projectName})`;
