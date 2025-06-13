@@ -9,7 +9,7 @@ class Project {
         this.todos = [];
     }
 
-    addToDo(todoItem) {
+    addTodo(todoItem) {
         if(!(todoItem instanceof Todo)) return false;
         if(this.todos.some((todo) => todo.id === todoItem.id)) return false; // Check if the todo is already in the project's todos
         
@@ -21,7 +21,7 @@ class Project {
         this.todos = this.todos.filter((todo) => todo.id !== todoID);
     }
 
-    getTodoByID(todoID) {
+    getTodoById(todoID) {
         return this.todos.find((todo) => todo.id === todoID);
     }
 
@@ -29,7 +29,7 @@ class Project {
         return [...this.todos]; // Return a copy to prevent unwanted modifications
     }
 
-    getTodoByPriorit(priorityLevel) {
+    getTodoByPriority(priorityLevel) {
         return this.todos.filter((todo) => todo.priority === priorityLevel);
     }
 

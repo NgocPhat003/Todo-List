@@ -10,16 +10,17 @@ const appLogic = (() => {
 
     function rehydrateProjects(plainProjects) {
         return plainProjects.map((plainProject) => {
-            const project = new Project(plainProjects.name);
+            const project = new Project(plainProject.name);
             project.id = plainProject.id;
-            project.todos  =plainProjects.todos.map((plainTodo) => {
+            project.todos  = plainProject.todos.map((plainTodo) => {
                 const todo = new Todo(
                     plainTodo.title,
                     plainTodo.description,
                     plainTodo.dueDate,
+                    plainTodo.priority,
                     plainTodo.tags || [],
                     plainTodo.completed,
-                )  ;
+                );
                 todo.id = plainTodo.id;
                 return todo;  
             });
@@ -29,8 +30,9 @@ const appLogic = (() => {
 
     function createSampledData() {
         const workProject = new Project('Work');
-        workProject.addTodo(new Todo('Finish report','Report must include all necessary information and sources', new Date(2025, 6, 6), 'high' , ['report'], false));
-        workProject.addTodo(new Todo('Team meeting','Must be on time!!!', new Date(2025, 6, 10), 'medium' , ['report'], false));
+        workProject.addTodo(new Todo('Finish Q2 report', 'Compile required data and finalize the conclusion.', new Date(2025, 4, 26), 'high', ['report'], false));
+        workProject.addTodo(new Todo('Team meeting prep', `Prepare agenda and slides for Monday's team meeting.`, new Date(2025, 5, 6), 'medium', ['meeting'], false));
+        workProject.addTodo(new Todo('Client follow-up', 'Call John Doe regarding project Alpha.', '', 'medium', ['client', 'shopping'], true));
 
         const personalProject = new Project('Personal');
         personalProject.addTodo(new Todo('Grocery shopping', 'Milk, eggs, chicken, fruits.', new Date(2025, 4, 20), 'low', ['home', 'shopping'], false));
@@ -87,14 +89,14 @@ const appLogic = (() => {
     }
 
     function removeProject(projectId) {
-        const projectIndex = projects.findIndex(p => p.id = projectId);
+        const projectIndex = projects.findIndex(p => p.id === projectId);
         if(projectIndex > -1) {
             if(projects.length === 1) {
                 return {error: 'last_project'};
             }
-            const removedProject = project.splice(projectIndex,1)[0];
+            const removedProject = projects.splice(projectIndex,1)[0];
             if (currentProject && currentProject.id === projectId) {
-                currentProject = projects.length > 0 ? project[0] : null;
+                currentProject = projects.length > 0 ? projects[0] : null;
             }
             saveProjects();
             return { success: true, removedProjectName: removedProject.name, newCurrentProject: currentProject};
@@ -155,7 +157,7 @@ const appLogic = (() => {
             const todo = project.getTodoById(todoId) 
             if(todo) {
                 if(updatedDetails.tagsString !== undefined) {
-                    todo.setTagFromString(updatedDetails.tagsString);
+                    todo.setTagsFromString(updatedDetails.tagsString);
 
 
                     const {tagsString, ...otherDetails } = updatedDetails;
@@ -168,6 +170,7 @@ const appLogic = (() => {
             }
             return null;
         }
+    }
 
         function toggleTodoComplete(projectId, todoId) {
             const project = getProjectById(projectId);
@@ -297,8 +300,7 @@ const appLogic = (() => {
             filterTodosByPriorityAcrossProjects,
             sortTodos,
           };
-    }
 
-});
+})();
 
 export default appLogic;

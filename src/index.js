@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let todosToDisplay = [];
         let viewTitle = '';
         const isGlobalMode   = currentSearchTerm && currentSearchTerm !== '';
-        const currentProjectFromSideBar = appLogic.getCurrentProject;
+        const currentProjectFromSideBar = appLogic.getCurrentProject();
 
         if(isGlobalMode) {
             // Active global search
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (action === 'added') appLogic.setCurrentProject(result.id);
                 refreshProjectsList();
                 updateAndRenderTodos();
-                domController.closeProjectModal;
+                domController.closeProjectModal();
                 domController.showNotification(`Project "${result.name}" ${action}.`, 'success');
             } else if (action === 'added') {
                 domController.showNotification  ('Unable to add project. Name might be invalid.', 'error');
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Actions on a project
-    domController.elements.projectListUL.addEventListener('click', (e) => {
+    domController.elements.projectsListUL.addEventListener('click', (e) => {
         const projectLi = e.target.closest('li[data-project-id]');
         if(!projectLi) return;
 
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Actions on todo items
-    domController.elements.todoListUL.addEventListener('click', (e) => {
+    domController.elements.todosListUL.addEventListener('click', (e) => {
         const target = e.target;
         const todoLi = target.closest('li[data-todo-id]');
         if (!todoLi) return;

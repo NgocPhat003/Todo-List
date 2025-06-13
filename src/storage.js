@@ -3,7 +3,7 @@
 const STORAGE_KEY = 'todoAppProjects';
 
 const storage = {
-    savedata: function (data) {
+    saveData: function (data) {
         try {
             const serializedData =JSON.stringify(data);
             localStorage.setItem(STORAGE_KEY, serializedData);

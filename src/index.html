@@ -22,7 +22,7 @@
         <main class="app-layout">
             <aside class="projects-sidebar">
                 <h2>Projects</h2>
-                <ul id="projects-lists"></ul>
+                <ul id="projects-list"></ul>
                 <button id="add-project-btn" class="primary-btn">Add project</button>
             </aside>
 
@@ -60,7 +60,7 @@
     <div id="todo-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="todo-modal-title">
         <div class="modal-content">
             <div class="scroller">
-                <span class="close-btn" id="close-todo-modal">&times;</span>
+                <span class="close-btn" id="close-todo-modal-btn">&times;</span>
                 <h3 id="todo-modal-title">Task details</h3>
                 <form id="todo-form" novalidate>
                     <input type="hidden" id="todo-id" name="todo-id">
@@ -103,9 +103,9 @@
     <div id="project-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
         <div class="modal-content">
             <div class="scroller">
-                <span class="close-btn" id="close-project-modal">&times;</span>
+                <span class="close-btn" id="close-project-modal-btn">&times;</span>
                 <h3 id="project-modal-title">Project details</h3>
-                <form id="project-from" novalidate>
+                <form id="project-form" novalidate>
                     <input type="hidden" id="project-id" name="project-id">
                     <fieldset>
                         <label for="project-name-input">Project name*</label>
@@ -120,4 +120,5 @@
         </div>
     </div>
 </body>
+
 </html>

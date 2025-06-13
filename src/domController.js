@@ -4,7 +4,7 @@ import { format, isValid as isValidDate} from 'date-fns';
 
 const domController = (() => {
     // DOM element selectors
-    const projectsListUL = document.getElementById('project-list');
+    const projectsListUL = document.getElementById('projects-list');
     const addProjectBtn = document.getElementById('add-project-btn');
     const currentProjectTitle = document.getElementById('current-project-title');
     const addTodoBtn = document.getElementById('add-todo-btn');
@@ -19,7 +19,7 @@ const domController = (() => {
     const projectIdInput = document.getElementById('project-id');
     const projectNameInput = document.getElementById('project-name-input');
     const saveProjectBtn = document.getElementById('save-project-btn');
-    const closeProjectModalBtn = document.getElementById('closes-project-modal-btn');
+    const closeProjectModalBtn = document.getElementById('close-project-modal-btn');
 
     // Todo modal
     const todoModal = document.getElementById('todo-modal');
@@ -30,7 +30,7 @@ const domController = (() => {
     const todoDueDateInput = document.getElementById('todo-dueDate-input');
     const todoPriorityInput = document.getElementById('todo-priority-input');
     const todoTagsInput = document.getElementById('todo-tags-input');
-    const closeTodoModalBtn = document.getElementById('close-todo-modal');
+    const closeTodoModalBtn = document.getElementById('close-todo-modal-btn');
 
     // Functions to remove all child nodes
     function clearElement(element) {
@@ -41,7 +41,7 @@ const domController = (() => {
 
     function formatDateForDisplay(date) {
         if( date instanceof Date  && isValidDate(date)) {
-            return format(date, 'MMM dd, YYY') ;
+            return format(date, 'MMM dd, yyyy') ;
         }
         return 'No date set';
     }
@@ -56,11 +56,11 @@ const domController = (() => {
             projectsListUL.appendChild(li);
         }
 
-        projects.foreach((project) => {
+        projects.forEach((project) => {
             const li = document.createElement('li');
             li.dataset.projectId = project.id;
 
-            const namespan = document.createElement('span');
+            const nameSpan = document.createElement('span');
             nameSpan.classList.add('project-name');
             nameSpan.textContent = project.name;
             li.appendChild(nameSpan);
@@ -165,10 +165,10 @@ const domController = (() => {
             }
 
             // Tags display
-            if (todos.tags && todos.tags.length > 0) {
+            if (todo.tags && todo.tags.length > 0) {
                 const tagsDiv = document.createElement('div');
                 tagsDiv.classList.add('todos-tags-display');
-                todos.tags.forEach((tag) => {
+                todo.tags.forEach((tag) => {
                     const tagSpan = document.createElement('span');
                     tagSpan.classList.add('tag-label');
                     tagSpan.textContent = tag;
@@ -213,7 +213,7 @@ const domController = (() => {
             descriptionP.appendChild(descriptionText);
 
             const priorityP = document.createElement('p');
-            const priorityText = todo.priority.charAt(0).topUpperCase() + todo.priority.slice(1);
+            const priorityText = todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1);
             priorityP.innerHTML = `Priority: <span class="priority-text-${todo.priority}">${priorityText}</span>`;
 
             fullDetailsDiv.appendChild(descriptionP);
@@ -287,7 +287,7 @@ const domController = (() => {
         const description = todoDescriptionInput.value.trim();
         const dueDate = todoDueDateInput.value;
         const priority = todoPriorityInput.value;
-        const tagString  = todoTagsInput.value.trim(); // Comma-separated string
+        const tagsString  = todoTagsInput.value.trim(); // Comma-separated string
         const id = todoIdInput.value;
         const currentProjectId = todoForm.dataset.currentProjectId;
     
@@ -304,7 +304,7 @@ const domController = (() => {
             description,
             dueDate,
             priority,
-            tagString,
+            tagsString,
             currentProjectId
         }
         : null;
@@ -417,6 +417,6 @@ const domController = (() => {
         },
     };
 
- });
+ })();
 
  export default domController;
