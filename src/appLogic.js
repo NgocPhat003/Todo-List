@@ -300,3 +300,5 @@ const appLogic = (() => {
     }
 
 });
+
+export default appLogic;

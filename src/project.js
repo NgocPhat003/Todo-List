@@ -54,3 +54,5 @@ class Project {
         return Array.from(allTags).sort();
     }
 }
+
+export default Project;
