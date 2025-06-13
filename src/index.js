@@ -14,18 +14,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagFilterClearBtn = document.getElementById('tag-filter-clear-btn');
     const sortTodosSelect = document.getElementById('sort-todos');
 
-    function refreshTagCloud() {
+    function refreshTagCloud(isGlobalMode = false) {
         let tagsForCloud = [];
         const currentProject = appLogic.getCurrentProject();
-        const isGlobalMode = currentSearchTerm && currentSearchTerm.trim() !== '';
 
-        if(isGlobalMode) {
+        if (isGlobalMode) { // True if date filter or global search is active
             tagsForCloud = appLogic.getAllTagsAcrossProjects();
         } else if (currentProject) {
             const projectData = appLogic.getProjectById(currentProject.id);
             tagsForCloud = projectData ? projectData.getUniqueTags() : [];
         } else {
-            tagsForCloud.renderTagCloud(tagsForCloud, currentTagFilter);
+            tagsForCloud = appLogic.getAllTagsAcrossProjects();
         }
         domController.renderTagCloud(tagsForCloud, currentTagFilter);
     }
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             todosToDisplay = [];
         }
 
-        refreshTagCloud();
+        refreshTagCloud(isGlobalMode || !currentProjectFromSideBar);
 
         let filteredTodos = [...todosToDisplay];
         if (currentPriorityFilter !== 'all') {
