@@ -9,3 +9,4 @@ A task manager to help users stay organized.
 - Filter tasks by priority and tags
 - Sort tasks by due date, priority, title
 
+[Live preview](https://ngocphat003.github.io/Todo-List/)
