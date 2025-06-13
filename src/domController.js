@@ -66,7 +66,7 @@ const domController = (() => {
             li.appendChild(nameSpan);
 
             const actionsDiv = document.createElement('div');
-            actiosnDiv.classList.add('project-actions');
+            actionsDiv.classList.add('project-actions');
 
             const editBtn = document.createElement('button');
             editBtn.innerHTML = 'Edit';
@@ -245,7 +245,7 @@ const domController = (() => {
     function openTodoModal(todoToEdit = null, currentProjectId) {
         clearFormErrors(todoForm);
         todoForm.reset();
-        todoIdInput.value = ''; // Clear hidde ID field
+        todoIdInput.value = ''; // Clear hidden ID field
 
         if (todoToEdit) {
             todoIdInput.value = todoToEdit.id;
@@ -253,7 +253,7 @@ const domController = (() => {
             todoDescriptionInput.value = todoToEdit.description;
             todoDueDateInput.value = (todoToEdit.dueDate && isValidDate(todoToEdit.dueDate))
                 ? format(todoToEdit.dueDate, 'yyyy-MM-dd') // Format date obj for input
-                : ''; // Empty string for null or ivalid date
+                : ''; // Empty string for null or invalid date
             todoPriorityInput.value = todoToEdit.priority;
             todoTagsInput.value = todoToEdit.tags ? todoToEdit.getTagsString() : '';
         }
@@ -268,7 +268,7 @@ const domController = (() => {
 
     // Getting form data
     function getProjectFormData() {
-        clearFormErros(projectForm);
+        clearFormErrors(projectForm);
         let isValid = true;
         const name = projectNameInput.value.trim();
         const id = projectIdInput.value;
@@ -331,7 +331,7 @@ const domController = (() => {
         }
     }
 
-    function showNotification(mesage, type = 'info') { // Types include: info, success, error, warning
+    function showNotification(message, type = 'info') { // Types include: info, success, error, warning
         const notification = document.createElement('div');
         notification.classList.add('notification', type);
         notification.textContent   = message;
@@ -379,7 +379,7 @@ const domController = (() => {
 
     // Initial state
     function initializeUI() {
-        updateProjectTitle('Loding projects...');
+        updateProjectTitle('Loading projects...');
         clearElement(todosListUL);
         const li = document.createElement('li');
         li.textContent = 'Select or add a project to see your tasks.'
